@@ -1,0 +1,6 @@
+[03-Apr-2023 10:14:34 UTC] PHP Fatal error:  Uncaught RuntimeException: A facade root has not been set. in /home/r5iici5zu9r7/public_html/buy_sell_used_drones/uk/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:258
+Stack trace:
+#0 /home/r5iici5zu9r7/public_html/buy_sell_used_drones/uk/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/RegisterErrorViewPaths.php(18): Illuminate\Support\Facades\Facade::__callStatic('replaceNamespac...', Array)
+#1 /home/r5iici5zu9r7/public_html/buy_sell_used_drones/uk/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(598): Illuminate\Foundation\Exceptions\RegisterErrorViewPaths->__invoke()
+#2 /home/r5iici5zu9r7/public_html/buy_sell_used_drones/uk/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(579): Illuminate\Foundation\Exceptions\Handler->registerErrorViewPaths()
+#3 /home/r5iici5zu9r7/public_html/buy_sell_used_drones/uk/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(490): Illuminate\Foundation\Exceptions\Handler->ren in /home/r5iici5zu9r7/public_html/buy_sell_used_drones/uk/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php on line 258
