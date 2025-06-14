@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Auth;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -29,7 +31,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/check/route';
 
     /**
      * Create a new controller instance.
@@ -49,10 +51,28 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+         
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'name',
+            'email' => ['required', 'string', 'email','unique:users' ],
+             'mobile_no',
+             'country_id',
+             'trading_name',
+             'website_link',
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'company_name',
+            'registered_address',
+            'country',
+            'registered_number',
+            'company_email',
+            'company_phone',
+            'seller',
+            'is_deleted',
+            'address1',
+             'address2',
+              'city',
+             'state',
+              'pincode'
         ]);
     }
 
@@ -60,14 +80,58 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\Models\User
      */
     protected function create(array $data)
     {
-        return User::create([
+        if($data['seller']=="Y")
+        {
+            return User::create([
             'name' => $data['name'],
+            'country_id' => $data['country_id'],
+            'trading_name' => $data['trading_name'],
+            'website_link' => $data['website_link'],
             'email' => $data['email'],
+            'mobile_no' => $data['mobile_no'],
             'password' => Hash::make($data['password']),
+            'company_name' => $data['company_name'],
+             'registered_number' => $data['registered_number'],
+            'company_email' => $data['company_email'],
+            'company_phone' => $data['company_phone'],
+            'seller' => $data['seller'],
+            'address1' => $data['address1'],
+            'address2' => $data['address2'],
+            'city' => $data['city'],
+            'state' => $data['state'],
+            'pincode' => $data['pincode'],
+            'is_deleted' => 'N',
         ]);
+            
+        }
+        else
+        {
+            return User::create([
+            'name' => $data['name'],
+            'country_id' => $data['country_id'],
+            'email' => $data['email'],
+            'mobile_no' => $data['mobile_no'],
+            'password' => Hash::make($data['password']),
+            'seller' => $data['seller'],
+             'is_deleted' => 'N',
+        ]);
+        }
+        
+    }
+     public function sellerExist(Request $request)
+    {
+        $userExist = User::where('company_phone',$request->phoneNumber)->count();
+       if($userExist==0)
+       {
+            return response()->json(['success' => true]);
+       }
+       else
+       {
+            return response()->json(['success' => false]);
+       }
     }
 }

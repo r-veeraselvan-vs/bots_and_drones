@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\UserController;
+use App\Http\Controller\CommonController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,134 +13,205 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+ // routes/web.php
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\CompareController;
 
+// Add this route definition
+Route::get('/compare', [CompareController::class, 'index'])->name('compare.index');
+Route::get('/compare/home', [CompareController::class, 'home'])->name('compare');
+Route::get('/get-applications', [CompareController::class, 'getApplications'])->name('getApplications');
+Route::get('/get-products', [CompareController::class, 'getProducts'])->name('getProducts');
+Route::post('/check-email-unique', [App\Http\Controllers\CommonController::class, 'checkEmailUnique'])->name('checkemail');
+Route::post('/check-company-email-unique', [App\Http\Controllers\CommonController::class, 'checkCompanyEmailUnique'])->name('checkcompanyemail');
 
-Route::get('/admin', function () {
-    return view('auth.login');
-});
+ 
+Route::get('/', [App\Http\Controllers\CommonController::class, 'index'])->name('index');
+ Route::get('/check/seller/email/exist', [App\Http\Controllers\Auth\RegisterController::class, 'sellerExist'])->name('seller.exist');
 
-Route::get('/admin/login', function () {
-    return view('auth.login');
-});
-
-Route::get('/verified', function () {
-    return view('verified_email');
-});
-
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::prefix('suppliers')->group(function() {
-
-    Route::get('/list','Admin\SuppliersController@list')->name('supplier.list');
-    Route::get('/add','Admin\SuppliersController@add')->name('supplier.add');
-    Route::post('/save','Admin\SuppliersController@save')->name('supplier.save');
-    Route::get('/edit/{id}','Admin\SuppliersController@edit')->name('supplier.edit');
-    Route::post('/update','Admin\SuppliersController@update')->name('supplier.update');
-
-     Route::get('/delete','Admin\SuppliersController@delete')->name('supplier.delete');
-});
-
-
-Route::prefix('products')->group(function() {
-
-    Route::get('/list','Admin\ProductsController@list')->name('product.list');
-    Route::get('/add','Admin\ProductsController@add')->name('product.add');
-    Route::post('/save','Admin\ProductsController@save')->name('product.save');
-    Route::get('/edit/{id}','Admin\ProductsController@edit')->name('product.edit');
-    Route::post('/update','Admin\ProductsController@update')->name('product.update');
-
-     Route::get('/delete','Admin\ProductsController@delete')->name('product.delete');
-});
-
-Route::prefix('services')->group(function() {
-
-    Route::get('/list','Admin\ServiceController@list')->name('service.list');
-    Route::get('/add','Admin\ServiceController@add')->name('service.add');
-    Route::post('/save','Admin\ServiceController@save')->name('service.save');
-    Route::get('/edit/{id}','Admin\ServiceController@edit')->name('service.edit');
-    Route::post('/update','Admin\ServiceController@update')->name('service.update');
-     Route::get('/delete','Admin\ServiceController@delete')->name('service.delete');
-});
-
-Route::prefix('services-providers')->group(function() {
-
-    Route::get('/list','Admin\ServiceProviderController@list')->name('service.provider.list');
-    Route::get('/add','Admin\ServiceProviderController@add')->name('service.provider.add');
-    Route::post('/save','Admin\ServiceProviderController@save')->name('service.provider.save');
-     Route::get('/edit/{id}','Admin\ServiceProviderController@edit')->name('service.edit');
-    Route::post('/update','Admin\ServiceProviderController@update')->name('service.provider.update');
-});
-
-
-Route::prefix('trainer-courses')->group(function() {
-
-    Route::get('/list','Admin\TrainingCoursesController@list')->name('courses.list');
-    Route::get('/add','Admin\TrainingCoursesController@add')->name('courses.add');
-    Route::post('/save','Admin\TrainingCoursesController@save')->name('courses.save');
-    Route::get('/edit/{id}','Admin\TrainingCoursesController@edit')->name('courses.edit');
-    Route::post('/update','Admin\TrainingCoursesController@update')->name('courses.update');
-     Route::get('/delete','Admin\TrainingCoursesController@delete')->name('courses.delete');
-});
-
-Route::prefix('training-centers')->group(function() {
-
-    Route::get('/list','Admin\TrainingCentersController@list')->name('training.centers.list');
-    Route::get('/add','Admin\TrainingCentersController@add')->name('training.centers.add');
-    Route::post('/save','Admin\TrainingCentersController@save')->name('training.centers.save');
-     Route::get('/edit/{id}','Admin\TrainingCentersController@edit')->name('training.centers.edit');
-    Route::post('/update','Admin\TrainingCentersController@update')->name('training.centers.update');
-});
-
-
-/******** Admin Product Enquiry ******/
-
-Route::get('/enquiry/list', 'EnquiryController@list')->name('enquiry.list');
-
-/******** Admin Service Enquiry ******/
-
-Route::get('/service/enquiry/list', 'EnquiryController@listServiceEnquiry')->name('enquiry.service.list');
-
-/******** Admin Trainer Enquiry ******/
-
-Route::get('/trainee/enquiry/list', 'EnquiryController@listTrainerEnquiry')->name('enquiry.trainer.list');
-
-/******** Product Enquiry ******/
-
-
-Route::get('/product/{id}', 'EnquiryController@enquiry')->name('enquiry');
-
-Route::post('/enquiry/add', 'EnquiryController@enquirySave')->name('enquiry.add');
-
-
-/******** Service Enquiry ******/
-
-
-Route::get('/service/enquiry/{id}', 'EnquiryController@serviceEnquiry')->name('service.enquiry');
-
-Route::post('/service/enquiry/add', 'EnquiryController@serviceEnquirySave')->name('service.enquiry.add');
-
-/******** Service Enquiry ******/
-
-
-Route::get('/testEmail', 'EnquiryController@testEmail')->name('testEmail');
-
-
-Route::get('/trainee/enquiry/{id}', 'EnquiryController@traineeEnquiry')->name('trainee.enquiry');
-
-Route::post('/trainee/enquiry/add', 'EnquiryController@traineeEnquirySave')->name('trainee.enquiry.add');
-
-
-Route::get('/clear', function () {
+ Route::get('/clear', function () {
     Artisan::call('view:clear');
     Artisan::call('config:cache');
-     Artisan::call('config:clear');
-      Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
     echo 'done';
 });
+    Auth::routes(['verify' => true]);
+Route::middleware(['revalidate'])->group(function () {
+    Auth::routes();
+});
+
+ Route::get('/check/route', function () {
+     $contact_id = Session::get('contact_id');
+     if($contact_id==null)
+    {
+        if(Session::get('shop_url')!=null)
+        {
+             return redirect('wishlist/'.Session::get('wishlist')."/".Session::get('wishlist_type')); 
+        }
+        elseif(Auth::user()->seller=="N")
+        {
+            if(Auth::user()->email_verified_at!=null)
+            {
+                 return redirect()->route('enquiry.buyer.list'); 
+            }
+            else
+            {
+                   Auth::logout();
+                 return redirect()->route('buyer.verify'); 
+            }
+        }
+        elseif(Auth::user()->seller==null)
+        {
+            if(Auth::user()->email_verified_at!=null)
+            {
+                 return redirect()->route('enquiry.buyer.list'); 
+            }
+            else
+            {
+                   Auth::logout();
+                 return redirect()->route('buyer.verify'); 
+            } 
+        }
+        else
+        {
+            if(Auth::user()->email_verified_at!=null)
+            {
+                 return redirect()->route('product.list'); 
+            }
+            else
+            {
+                   Auth::logout();
+                 return redirect()->route('seller.verify'); 
+            }
+           
+        }
+         
+    }
+    else
+    {
+         
+        return redirect()->route('contact', [$contact_id]);
+     
+    }
+});
+
+Route::post('/login/check', [App\Http\Controllers\Auth\LoginController::class, 'loginCheck'])->name('login.check');
+ Route::get('/seller/route', function () {
+     return view('seller.verify');
+     
+})->name('seller.verify');
+
+// New route for buyer verification
+Route::get('/buyer/route', function () {
+    // Add your logic for buyer verification here
+    return view('buyer.verify'); // Replace with your actual buyer verification view
+})->name('buyer.verify');
+
+Route::get('/home', [App\Http\Controllers\CommonController::class, 'listProducts'])->name('seller.verify');
+
+
+Route::get('/subscribe', [App\Http\Controllers\CommonController::class, 'subscribe'])->name('Subscribe.index');
+Route::post('/subscription', [App\Http\Controllers\CommonController::class, 'subscription'])->name('subscription.subscribe');
+
+Route::get('/home', [App\Http\Controllers\CommonController::class, 'listProducts'])->name('home');
+
+Route::get('/role', [App\Http\Controllers\CommonController::class, 'userRedirection'])->name('role');
+
+Route::get('/reset/filter', [App\Http\Controllers\CommonController::class, 'resetFilter'])->name('reset.filter');
+
+
+Route::get('/shop', [App\Http\Controllers\CommonController::class, 'products'])->name('products');
+Route::get('/product/{slug}', [App\Http\Controllers\CommonController::class, 'product'])->name('product.details');
+Route::get('/products/list', [App\Http\Controllers\CommonController::class, 'listProducts'])->name('product.list')->middleware('verified');
+
+Route::get('/wishlist/{product_id}/{type}', [App\Http\Controllers\Seller\WishListController::class, 'add'])->name('wishlist.add');
+
+Route::get('/product/{menu}/{slug}/{sub_slug}', [App\Http\Controllers\CommonController::class, 'products'])->name('products');
+Route::get('/enquiry/{id}', [App\Http\Controllers\Buyer\EnquiryController::class, 'enquiry'])->name('enquiry');
+
+//---contact--seller------//
+Route::get('/contact/{id}', [App\Http\Controllers\Buyer\EnquiryController::class, 'contact'])->name('contact');
+Route::post('/add/contact', [App\Http\Controllers\Buyer\EnquiryController::class, 'addcontact'])->name('contact.add');
+Route::get('/ordered/{id}', [App\Http\Controllers\Buyer\EnquiryController::class, 'ordered'])->name('ordered');
+Route::post('/add/ordered', [App\Http\Controllers\Buyer\EnquiryController::class, 'addOrdered'])->name('ordered.add');
+Route::get('/remainder', [App\Http\Controllers\Buyer\EnquiryController::class, 'remainder'])->name('remainder');
+
+Route::group(['middleware' => 'auth'], function () {
+Route::get('/dashboard', [App\Http\Controllers\CommonController::class, 'dashboard'])->name('dashboard');
+
+Route::get('/post-ad', [App\Http\Controllers\Seller\ProductsController::class, 'postAdd'])->name('post-ad');
+Route::get('/edit/product/{id}', [App\Http\Controllers\Seller\ProductsController::class, 'edit'])->name('product.edit');
+
+Route::post('/add/product', [App\Http\Controllers\Seller\ProductsController::class, 'add'])->name('product.add');
+
+//otp verification
+Route::post('/store-otp', 'OtpController@storeOtp')->name('store.otp');
+Route::get('/get-stored-otp', 'OtpController@getStoredOtp')->name('get.stored.otp');
+
+ 
+Route::post('/add/enquiry', [App\Http\Controllers\Buyer\EnquiryController::class, 'addEnquiry'])->name('enquiry.add');
+Route::post('/enquiry/addRemark/{id}', [App\Http\Controllers\Buyer\EnquiryController::class, 'addRemark'])->name('enquiry.addRemark');
+Route::get('/order/{id}', [App\Http\Controllers\Buyer\EnquiryController::class, 'order'])->name('order');
+
+Route::post('/add/order', [App\Http\Controllers\Buyer\EnquiryController::class, 'addOrder'])->name('order.add');
+
+Route::get('/drone_enquiries', [App\Http\Controllers\Buyer\EnquiryController::class, 'listEnquiry'])->name('enquiry.list');
+
+Route::get('/enquiries/buyer', [App\Http\Controllers\Buyer\EnquiryController::class, 'listBuyerEnquiry'])->name('enquiry.buyer.list');
+Route::get('/enquiries/seller/delete', [App\Http\Controllers\Buyer\EnquiryController::class, 'sellerdelete'])->name('seller.delete');
+Route::get('/enquiries/buyer/delete', [App\Http\Controllers\Buyer\EnquiryController::class, 'buyerdelete'])->name('buyer.delete');
+
+Route::post('/handle-request/{contact}', [App\Http\Controllers\Buyer\EnquiryController::class, 'handleRequest'])->name('handle.request');
+Route::post('/handle-accept/{contact}', [App\Http\Controllers\Buyer\EnquiryController::class, 'handleAccept'])->name('handle.accept');
+
+Route::get('/delete/product/{id}/{status}', [App\Http\Controllers\Seller\ProductsController::class, 'deleteProduct'])->name('product.delete');
+
+
+Route::get('/image/delete/product', [App\Http\Controllers\Seller\ProductsController::class, 'deleteImage'])->name('product.image.delete');
+
+Route::get('/specification/delete/product', [App\Http\Controllers\Seller\ProductsController::class, 'deleteSpecification'])->name('product.specification.delete');
+
+
+Route::get('/storages', function () {
+    Artisan::call('storage:link');
+    echo 'done';
+});
+Route::get('/list/wishlist', [App\Http\Controllers\Seller\WishListController::class, 'listWishlistedItems'])->name('wishlist.list');
+
+//notifications
+Route::get('/notification/list', [App\Http\Controllers\NotificationController::class, 'list'])->name('notification.list');
+Route::get('/notification/{id}/view', [App\Http\Controllers\NotificationController::class, 'view'])->name('notification.view');
+
+Route::post('/add/product/commercial', [App\Http\Controllers\Seller\ProductsController::class, 'addCommercial'])->name('product.add.commercial');
+
+Route::post('/add/product/robots', [App\Http\Controllers\Seller\ProductsController::class, 'addRobots'])->name('product.add.robots');
+
+Route::post('/add/product/accessories', [App\Http\Controllers\Seller\ProductsController::class, 'addAccessories'])->name('product.add.accessories');
+
+
+Route::post('/update/product', [App\Http\Controllers\Seller\ProductEditController::class, 'update'])->name('product.update');
+
+
+Route::post('/update/product/commercial', [App\Http\Controllers\Seller\ProductEditController::class, 'updateCommercial'])->name('product.update.commercial');
+
+Route::post('/update/product/robots', [App\Http\Controllers\Seller\ProductEditController::class, 'updateRobots'])->name('product.update.robots');
+
+Route::post('/update/product/accessories', [App\Http\Controllers\Seller\ProductEditController::class, 'updateAccessories'])->name('product.update.accessories');
+
+
+//----------------profile--------------//
+Route::get('/profile/index', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+Route::get('/profile/edit/{id}', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profile/update/{id}', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+Route::get('/profile/delete', [App\Http\Controllers\ProfileController::class, 'delete'])->name('profile.delete');
+
+//----------------Change Password--------------//
+ Route::post('/profile/changePassword/update', [App\Http\Controllers\ProfileController::class, 'updateChangePassword'])->name('profile.changePassword');
+Route::get('/profile/changePassword', [App\Http\Controllers\ProfileController::class, 'viewChangePassword'])->name('profile.view.changePassword');
+
+
+Route::get('/wishlist/delete', [App\Http\Controllers\Seller\WishListController::class, 'Delete'])->name('wishlist.Delete');
+
+});
+include "adminRoutes.php";

@@ -31,8 +31,8 @@
 <h1>Hello</h1>
  <p>You have received an inquiry from the following user, please find the details below.</p><br>
   <?php
-    $product = \App\Product::where('id',$enquiries->products_id)->first();
-    $customer = \App\Customer::where('id',$enquiries->customer_id)->first();
+    $product = \App\Models\Products::where('id',$enquiries->product_id)->first();
+    $customer = \App\Models\User::where('id',$enquiries->buyer_id)->first();
     ?>
 <table id="customers">
 
@@ -42,7 +42,7 @@
   </tr>
    <tr>
     <td>Product</td>
-    <td> {{ $product['name'] }}</td>
+    <td> {{ $product['title'] }}</td>
   </tr>
    <tr>
     <td>Name</td>
@@ -56,27 +56,8 @@
     <td>Mobile Number</td>
     <td>{{ $customer['mobile_no'] }}</td>
   </tr>
-   <tr>
-    <td>City</td>
-    <td>{{ $customer['location'] }}</td>
-  </tr>
-   <tr>
-    <td>Country</td>
-    <td>{{ $customer['country'] }}</td>
-  </tr>
-   <tr>
-    <td>Company Name</td>
-    <td>{{ $enquiries['company_name'] }}</td>
-  </tr>
-   <tr>
-    <td>Quantity</td>
-    <td>{{ $enquiries['quantity'] }}</td>
-  </tr>
-   <tr>
-    <td>Usage/ Application</td>
-    <td>{{ $enquiries['usage_application'] }}</td>
-  </tr>
-   
+  
+
 </table>
  <h1>Have a good day.</h1>
 </body>

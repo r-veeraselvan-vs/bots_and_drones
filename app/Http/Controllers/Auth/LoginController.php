@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -26,7 +28,25 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'suppliers/list';
+    protected $redirectTo = '/check/route';
+
+    public function loginCheck(Request $request) 
+    {
+        $this->validate($request, [
+            'email'   => 'required|email',
+            'password' => 'required|min:6'
+        ]);
+
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                     
+                           
+                    return redirect($this->redirectTo);
+                
+             
+        } else {
+            return redirect()->back()->with('error', 'Invalid credentials.');
+        }
+    }
 
     /**
      * Create a new controller instance.
@@ -36,5 +56,25 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+        $this->middleware('guest:admin')->except('logout');
+    }
+
+    public function showAdminLoginForm()
+    {
+        return view('auth.admin_login', ['url' => 'admin']);
+    }
+    
+    public function adminLogin(Request $request)
+    {
+        $this->validate($request, [
+            'email'   => 'required|email',
+            'password' => 'required|min:6'
+        ]);
+ 
+        if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
+ 
+            return redirect()->intended('/admin/home');
+        }
+        return back()->withInput($request->only('email', 'remember'));
     }
 }

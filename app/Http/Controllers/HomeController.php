@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
+use Session;
+use App\Models\Products;
+use App\Models\ProductImages;
+use App\Models\ProductSpecifications;
+use App\Models\ProductPackages;
 
 class HomeController extends Controller
 {
@@ -23,6 +29,26 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        
+        if(Session::get('post-ad')=="true")
+        {
+            return redirect()->route('post-ad');
+        }
+        else if(Session::get('eqnuiry')=="true")
+        {
+            $enquiry_id = Session::get('enquiry_id');
+            return redirect('enquiry/'.$enquiry_id);
+        }
+        else if(Session::get('wishlist')!=null)
+        {
+             return redirect('wishlist/'.Session::get('wishlist')."/".Session::get('wishlist_type'));
+        }
+        else
+        {
+            return view('home');
+        }
+        
     }
+
+   
 }
