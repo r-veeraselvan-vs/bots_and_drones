@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
-
+use Illuminate\Http\Request;
+use App\Models\User;
 class VerificationController extends Controller
 {
     /*
@@ -19,7 +20,9 @@ class VerificationController extends Controller
     |
     */
 
-    use VerifiesEmails;
+    use VerifiesEmails {
+        verify as originalVerify;
+    }
 
     /**
      * Where to redirect users after verification.
@@ -35,8 +38,15 @@ class VerificationController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('signed')->only('verify');
+         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+    }
+    
+     public function verify(Request $request)
+    {
+        $request->setUserResolver(function () use ($request) {
+            return User::findOrFail($request->route('id'));
+        });
+        return $this->originalVerify($request);
     }
 }
